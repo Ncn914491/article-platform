@@ -124,16 +124,22 @@ export default function PaymentButton({ amount, onSuccess, onError }: PaymentBut
               }),
             });
 
+            const verifyData = await verifyResponse.json();
+            
             if (!verifyResponse.ok) {
-              throw new Error('Payment verification failed');
+              console.error('Verification failed:', verifyData);
+              throw new Error(verifyData.error || 'Payment verification failed');
             }
 
+            console.log('Payment verification successful:', verifyData);
+            
             // Update user role locally
             await upgradeUser();
             onSuccess?.();
           } catch (error) {
             console.error('Payment verification error:', error);
-            onError?.('Payment verification failed');
+            const errorMessage = error instanceof Error ? error.message : 'Payment verification failed';
+            onError?.(errorMessage);
           }
         },
         prefill: {
