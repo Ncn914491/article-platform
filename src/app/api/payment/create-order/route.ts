@@ -48,16 +48,16 @@ export async function POST(req: NextRequest) {
       amount: order.amount,
       currency: order.currency,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating Razorpay order:');
-    console.error('Error message:', error.message);
-    console.error('Error details:', error.response?.data || error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error message:', errorMessage);
+    console.error('Error details:', error);
     
     return NextResponse.json(
       { 
         error: 'Failed to create payment order',
-        details: error.message || 'Unknown error',
-        ...(process.env.NODE_ENV === 'development' && { debug: error.response?.data })
+        details: errorMessage
       },
       { status: 500 }
     );
