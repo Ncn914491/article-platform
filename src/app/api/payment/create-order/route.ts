@@ -8,7 +8,11 @@ const razorpay = new Razorpay({
 
 export async function POST(req: NextRequest) {
   try {
+    console.log('Razorpay Key ID:', process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ? 'Present' : 'Missing');
+    console.log('Razorpay Key Secret:', process.env.RAZORPAY_KEY_SECRET ? 'Present' : 'Missing');
+    
     const { amount, currency = 'INR' } = await req.json();
+    console.log('Order request:', { amount, currency });
 
     if (!amount) {
       return NextResponse.json(
@@ -17,21 +21,44 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      console.error('Razorpay keys missing!');
+      return NextResponse.json(
+        { error: 'Payment configuration error' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Creating Razorpay order with:', {
+      amount: amount * 100,
+      currency,
+      receipt: `receipt_${Date.now()}`
+    });
+    
     const order = await razorpay.orders.create({
       amount: amount * 100, // Razorpay expects amount in paise
       currency,
       receipt: `receipt_${Date.now()}`,
     });
+    
+    console.log('Razorpay order created:', order.id);
 
     return NextResponse.json({
       orderId: order.id,
       amount: order.amount,
       currency: order.currency,
     });
-  } catch (error) {
-    console.error('Error creating Razorpay order:', error);
+  } catch (error: any) {
+    console.error('Error creating Razorpay order:');
+    console.error('Error message:', error.message);
+    console.error('Error details:', error.response?.data || error);
+    
     return NextResponse.json(
-      { error: 'Failed to create payment order' },
+      { 
+        error: 'Failed to create payment order',
+        details: error.message || 'Unknown error',
+        ...(process.env.NODE_ENV === 'development' && { debug: error.response?.data })
+      },
       { status: 500 }
     );
   }
