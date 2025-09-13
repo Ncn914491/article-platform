@@ -43,6 +43,10 @@ firebase-adminsdk-*.json
 *.key
 *.secret
 
+# Debug logs
+pglite-debug.log
+*.debug.log
+
 # vercel
 .vercel
 
