@@ -82,6 +82,25 @@ export default function Navigation() {
           </div>
         </div>
       </div>
+      
+      {/* Footer with policy links */}
+      <div className="bg-gray-100 border-t">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center py-4 space-x-6 text-sm text-gray-600">
+            <Link href="/contact" className="hover:text-indigo-600">
+              Contact Us
+            </Link>
+            <span className="text-gray-400">•</span>
+            <Link href="/shipping-policy" className="hover:text-indigo-600">
+              Shipping Policy
+            </Link>
+            <span className="text-gray-400">•</span>
+            <Link href="/refund-policy" className="hover:text-indigo-600">
+              Refund Policy
+            </Link>
+          </div>
+        </div>
+      </div>
     </nav>
   );
 }
