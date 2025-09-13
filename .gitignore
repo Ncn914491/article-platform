@@ -32,6 +32,16 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env.local
+.env.production
+.env.development
+
+# Firebase config (if storing locally)
+firebase-adminsdk-*.json
+
+# API keys and secrets
+*.key
+*.secret
 
 # vercel
 .vercel
